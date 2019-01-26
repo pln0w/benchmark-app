@@ -2,14 +2,20 @@ FROM php:7.3.1-cli
 
 RUN apt-get update \
 	&& apt-get install -y \
-		git \
-		zip \
-		bzip2
+		git
 
 RUN apt-get autoremove \
     && apt-get autoclean \
     && apt-get clean  \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN pecl install \
+        xdebug-2.7.0beta1 \
+    && docker-php-ext-enable \
+        xdebug
+
+ENV XDEBUG_EXT zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20170718/xdebug.so
+RUN alias php_xdebug="php -d$XDEBUG_EXT vendor/bin/phpunit"
 
 RUN curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/ \

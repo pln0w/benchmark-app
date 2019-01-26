@@ -1,4 +1,4 @@
-APP_NAME=bldr_benchmark_app
+APP_NAME=benchmark_app
 
 .PHONY: help
 
@@ -8,13 +8,11 @@ help:
 .DEFAULT_GOAL := help
 
 build: ## Build the image
-	@echo 'Building Docker image'
-	docker build -t $(APP_NAME) .
+	-@docker build -t $(APP_NAME) .
+	-@docker run -it -v `pwd`/app:/app $(APP_NAME) chmod +x bin/console.php
 
 benchmark: ## Run application for given data
-	@echo 'Running benchmark app'
-	docker run -i -t --rm --name="$(APP_NAME)" $(APP_NAME) bin/console app:run-benchmark --url=$(url) --competitors-urls=$(competitors)
+	-@docker run -it -v `pwd`/app:/app $(APP_NAME) bin/console.php app:run 2>/dev/null; true
 
 unit-tests: ## Run unit tests
-	@echo 'Running unit tests'
-	docker run -i -t --rm --name="$(APP_NAME)" $(APP_NAME) bin/phpunit -vvv --colors=always --debug --testsuite Unit
+	-@docker run -it -v `pwd`/app:/app $(APP_NAME) phpunit --testdox --coverage-html /app/coverage tests/ 2>/dev/null; true

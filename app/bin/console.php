@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application;
@@ -14,5 +14,5 @@ $loader = new PhpFileLoader($containerBuilder, new FileLocator(__DIR__.'/../conf
 $loader->load('dependencies.php');
 
 $app = new Application('BLDR Benchmark app', 'v1.0.0');
-$app->add($containerBuilder->get('app.ui.cli.command.run_benchmark_command'));
+$app->add($containerBuilder->get('run_benchmark_command'));
 $app->run();

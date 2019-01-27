@@ -2,7 +2,9 @@ FROM php:7.3.1-cli
 
 RUN apt-get update \
 	&& apt-get install -y \
-		git
+		git \
+		zip \
+		unzip
 
 RUN apt-get autoremove \
     && apt-get autoclean \

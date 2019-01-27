@@ -2,7 +2,9 @@
     "require": {
         "symfony/console": "^4.2",
         "symfony/dependency-injection": "^4.2",
-        "symfony/config": "^4.2"
+        "symfony/config": "^4.2",
+        "league/tactician": "^1.0",
+        "symfony/event-dispatcher": "^4.2"
     },
     "autoload": {
         "psr-4": {

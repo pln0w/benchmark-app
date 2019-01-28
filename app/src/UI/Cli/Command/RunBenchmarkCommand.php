@@ -2,17 +2,14 @@
 
 namespace App\UI\Cli\Command;
 
-use App\Domain\Benchmark\Command\PerformBenchmarkCommand;
 use App\Domain\Benchmark\Service\PerformBenchmarkService;
 use App\Domain\Report\Command\GenerateReportCommand;
-use App\Domain\Report\Factory\ReportStaticFactory;
+use App\Domain\Report\Factory\GenerateReportAdapterStaticFactory;
 use App\Domain\Report\ValueObject\ReportData;
-use App\Domain\Report\ValueObject\TextReport;
 use App\Domain\Url\ValueObject\Url;
 use League\Tactician\CommandBus;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,8 +18,8 @@ use Symfony\Component\Console\Question\Question;
 
 class RunBenchmarkCommand extends Command
 {
-    private const DEFAULT_URL = 'google.com';
-    private const DEFAULT_COMPETITORS_URLS = 'bing.com, ask.com';
+    private const DEFAULT_URL = 'yahoo.com';
+    private const DEFAULT_COMPETITORS_URLS = 'bing.com, google.com, ask.com, duckduckgo.com';
 
     protected $commandName = 'app:run';
     protected $commandDesc = 'Run benchmark';
@@ -60,32 +57,45 @@ class RunBenchmarkCommand extends Command
         $competitors = $this->askForCompetitors($url);
         $reportType = $this->askForReportType();
 
-        // treat as a single array to walk through all urls in single loop
-        array_push($competitors, $url);
+        $competitors[] = $url;
 
         $results = [];
         foreach ($competitors as $website) {
-            $results[] = $this->benchmarkService->run($website);
+
+            $this->output->writeln('==> testing '.$website->getUrl());
+
+            try {
+
+                $results[] = $this->benchmarkService->run($website);
+
+            } catch (RuntimeException $e) {
+                $this->output->writeln('<error>'.$e->getMessage().'</error>');
+                continue;
+            }
         }
 
-        $reportData = new ReportData($results);
-        $reportType = ReportStaticFactory::getAvailableTypesFlip()[$reportType];
-
-        $this->commandBus->handle(new GenerateReportCommand($reportData, $reportType));
-
         $this->output->writeln("\n<info>Done!</info>");
+
+        $this->commandBus->handle(new GenerateReportCommand(
+            new ReportData($results),
+            GenerateReportAdapterStaticFactory::getAvailableTypesFlip()[$reportType]
+        ));
     }
 
 
     private function askForUrl(): Url
     {
-        $content = '<question>Please enter the website URL</question> ';
-        $content .= '<comment>[default: '.self::DEFAULT_URL.']: </comment>';
+        $content = "<comment>Enter the website you want to compare with other competitors.\n";
+        $content .= 'default: '.self::DEFAULT_URL.'</comment>';
+        $content .= "\n<question>Please enter the website URL: </question> ";
 
         $answer = $this->helper->ask(
             $this->input,
             $this->output,
-            new Question($content, self::DEFAULT_URL)
+            new Question(
+                $content,
+                self::DEFAULT_URL
+            )
         );
 
         return new Url($answer, false);
@@ -94,13 +104,17 @@ class RunBenchmarkCommand extends Command
 
     private function askForCompetitors(Url $website): array
     {
-        $content = '<question>Please enter the competitors URLs</question> ';
-        $content .= '<comment>(comma separated) [default: '.self::DEFAULT_COMPETITORS_URLS.']: </comment>';
+        $content = "\n<comment>Enter competitors websites URLs separated by comma.\n";
+        $content .= 'default: '.self::DEFAULT_COMPETITORS_URLS.'</comment>';
+        $content .= "\n<question>Please enter the competitors URLs</question> ";
 
         $answer = $this->helper->ask(
             $this->input,
             $this->output,
-            new Question($content, self::DEFAULT_COMPETITORS_URLS)
+            new Question(
+                $content,
+                self::DEFAULT_COMPETITORS_URLS
+            )
         );
 
         $competitors = explode(',', $answer);
@@ -108,11 +122,13 @@ class RunBenchmarkCommand extends Command
         $urls = [];
         foreach ($competitors as $competitor) {
             $url = new Url(trim($competitor), true);
-            if (!in_array($url, $urls, true) && !$url->equal($website)) {
-                $urls[] = $url;
-            } else {
+
+            if (in_array($url, $urls, true) || $url->equal($website)) {
                 $this->output->writeln('<error>'.$url->getUrl().' is redundant URL, skipping.</error>');
+                continue;
             }
+
+            $urls[] = $url;
         }
 
         if (0 === count($urls)) {
@@ -125,16 +141,16 @@ class RunBenchmarkCommand extends Command
 
     private function askForReportType(): string
     {
-        $content = '<question>Select report type</question>';
-        $content .= '<comment>[default: '.ReportStaticFactory::getDefaultType().']</comment>';
+        $content = "\n<comment>Select the way you want to receive the report.</comment>\n";
+        $content .= '<question>Select report type</question>';
 
         return $this->helper->ask(
             $this->input,
             $this->output,
             new ChoiceQuestion(
                 $content,
-                ReportStaticFactory::getAvailableTypes(),
-                ReportStaticFactory::getDefaultType()
+                GenerateReportAdapterStaticFactory::getAvailableTypes(),
+                GenerateReportAdapterStaticFactory::getDefaultType()
             )
         );
     }

@@ -13,8 +13,10 @@ final class WebsiteLoadedSlowerEventSubscriber implements EventSubscriberInterfa
     private $emailService;
     private $smsService;
 
-    public function __construct(EmailService $emailService, SmsService $smsService)
-    {
+    public function __construct(
+        EmailService $emailService,
+        SmsService $smsService
+    ) {
         $this->emailService = $emailService;
         $this->smsService = $smsService;
     }
@@ -29,15 +31,19 @@ final class WebsiteLoadedSlowerEventSubscriber implements EventSubscriberInterfa
 
     public function onWebsiteLoadedSlower(WebsiteLoadedSlowerEvent $event): void
     {
-        $siteUrl = $event->getReportData()->getWebsiteResult()->getUrl();
+        print("\n==> EVENT::onWebsiteLoadedSlower fired.\n");
+
+        $siteUrl = $event->getReportData()->getWebsiteResult()->getWebsite()->getUrl();
         $message = "The $siteUrl website loaded slower than at least one competitor website.";
 
         $this->emailService->send($message);
     }
 
-    public function onWebsiteLoadedSlowerTwice(WebsiteLoadedSlowerEvent $event): void
+    public function onWebsiteLoadedSlowerTwice(WebsiteLoadedSlowerTwiceEvent $event): void
     {
-        $siteUrl = $event->getReportData()->getWebsiteResult()->getUrl();
+        print("\n==> EVENT::onWebsiteLoadedSlowerTwice fired.\n");
+
+        $siteUrl = $event->getReportData()->getWebsiteResult()->getWebsite()->getUrl();
         $message = "The $siteUrl website loaded slower twice than at least one competitor website.";
 
         $this->smsService->send($message);

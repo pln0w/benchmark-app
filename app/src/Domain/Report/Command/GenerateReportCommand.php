@@ -9,7 +9,7 @@ class GenerateReportCommand
     private $reportData;
     private $reportType;
 
-    public function __construct(ReportData $reportData, string $reportType)
+    public function __construct(ReportData $reportData, int $reportType)
     {
         $this->reportData = $reportData;
         $this->reportType = $reportType;
@@ -20,7 +20,7 @@ class GenerateReportCommand
         return $this->reportData;
     }
 
-    public function getReportType(): string
+    public function getReportType(): int
     {
         return $this->reportType;
     }

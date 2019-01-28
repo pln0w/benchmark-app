@@ -7,19 +7,23 @@ use App\Domain\Benchmark\ValueObject\Result;
 class ReportData
 {
     private $websiteResult;
-    private $competitorsWebsitesResults;
+    private $results;
 
     public function __construct(array $results)
     {
-        $this->competitorsWebsitesResults = [];
+        $this->results = [];
 
         foreach ($results as $result) {
-            if ($result->isCompetitor()) {
+            if (!$result->isCompetitor()) {
                 $this->websiteResult = $result;
-            } else {
-                $this->competitorsWebsitesResults[] = $result;
             }
+
+            $this->results[] = $result;
         }
+
+        usort($this->results, function ($a, $b) {
+            return $a->getRequestTime() > $b->getRequestTime();
+        });
     }
 
     public function getWebsiteResult(): Result
@@ -27,23 +31,32 @@ class ReportData
         return $this->websiteResult;
     }
 
-    public function getCompetitorsWebsitesResults(): array
+    public function getResults(): array
     {
-        return $this->competitorsWebsitesResults;
+        return $this->results;
     }
 
     public function isWebsiteResultSlower(): bool
     {
-        foreach ($this->getCompetitorsWebsitesResults() as $competitorResult) {
-            if ($competitorResult->isFasterThan($this->getWebsiteResult())) {
-
+        foreach ($this->getResults() as $result) {
+            if (!$result->getWebsite()->equal($this->getWebsiteResult()->getWebsite())
+                && $result->isFasterThan($this->getWebsiteResult())) {
+                return true;
             }
         }
-        return true;
+
+        return false;
     }
 
     public function isWebsiteResultSlowerTwice(): bool
     {
-        return true;
+        foreach ($this->getResults() as $result) {
+            if (!$result->getWebsite()->equal($this->getWebsiteResult()->getWebsite())
+                && $result->isFasterTwiceThan($this->getWebsiteResult())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

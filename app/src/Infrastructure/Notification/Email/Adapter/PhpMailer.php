@@ -8,6 +8,6 @@ final class PhpMailer implements MailerInterface
 {
     public function send(string $from, array $recipients, string $subject, string $body): void
     {
-        echo 'Email sent via PhpMailer.';
+        printf('%s', 'Email sent via PhpMailer.'.PHP_EOL);
     }
 }

@@ -34,5 +34,6 @@ ADD ./app /app
 
 RUN usermod -o -u 1000 www-data
 RUN chown -R www-data:1000 /app
+USER 1000
 
 CMD ["composer", "install"]

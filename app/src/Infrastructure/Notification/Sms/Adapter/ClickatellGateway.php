@@ -8,6 +8,6 @@ final class ClickatellGateway implements SmsGatewayInterface
 {
     public function send(array $recipients, string $body): void
     {
-        echo 'SMS sent via Clickatell gateway.';
+        printf('%s', 'SMS sent via Clickatell gateway.'.PHP_EOL);
     }
 }

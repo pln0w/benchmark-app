@@ -4,7 +4,7 @@ namespace App\Domain\Report;
 
 use App\Domain\Report\ValueObject\ReportData;
 
-interface ReportInterface
+interface GenerateReportAdapterInterface
 {
     public function generate(ReportData $reportData): void;
 }

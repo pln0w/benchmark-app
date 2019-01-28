@@ -2,24 +2,21 @@
 
 namespace App\Domain\Report\Factory;
 
-use App\Domain\Report\ReportInterface;
-use App\Domain\Report\Service\ConsoleReportService;
-use App\Domain\Report\Service\LogReportService;
-use App\Domain\Report\Service\WebReportService;
+use App\Domain\Report\GenerateReportAdapterInterface;
+use App\UI\Cli\Service\ConsoleReportOutputAdapterService;
+use App\UI\Http\Web\Service\WebReportOutputAdapterService;
 
-class ReportStaticFactory
+class GenerateReportAdapterStaticFactory
 {
     private const TYPE_CONSOLE = 1;
-    private const TYPE_LOG = 2;
-    private const TYPE_WEB = 3;
+    private const TYPE_WEB = 2;
 
     private static $availableTypes = [
         self::TYPE_CONSOLE => 'Console output',
-        self::TYPE_LOG => 'Log text file',
         self::TYPE_WEB => 'HTML website dump',
     ];
 
-    public static function getDefaultType(): string
+    public static function getDefaultType(): int
     {
         return self::TYPE_CONSOLE;
     }
@@ -34,18 +31,15 @@ class ReportStaticFactory
         return array_flip(self::$availableTypes);
     }
 
-    public static function create(int $choice): ReportInterface
+    public static function create(int $choice): GenerateReportAdapterInterface
     {
         switch ($choice) {
-            case self::TYPE_LOG:
-                return new LogReportService();
-                break;
             case self::TYPE_WEB:
-                return new WebReportService();
+                return new WebReportOutputAdapterService();
                 break;
             case self::TYPE_CONSOLE:
             default:
-                return new ConsoleReportService();
+                return new ConsoleReportOutputAdapterService();
         }
     }
 }

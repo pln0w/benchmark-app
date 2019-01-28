@@ -8,6 +8,6 @@ final class NexmoGateway implements SmsGatewayInterface
 {
     public function send(array $recipients, string $body): void
     {
-        echo 'SMS sent via Nexmo gateway.';
+        printf('%s', 'SMS sent via Nexmo gateway.'.PHP_EOL);
     }
 }

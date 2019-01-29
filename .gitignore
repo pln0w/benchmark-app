@@ -1,4 +1,7 @@
 .idea/
+app/.php_cs.cache
+app/phpunit.xml
 app/vendor
 app/coverage
 app/log.txt
+app/index.html

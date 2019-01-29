@@ -4,7 +4,7 @@ namespace App\UI\Cli\Command;
 
 use App\Domain\Benchmark\Service\PerformBenchmarkService;
 use App\Domain\Report\Command\GenerateReportCommand;
-use App\Domain\Report\Factory\GenerateReportAdapterStaticFactory;
+use App\Domain\Report\Factory\ReportAdapterStaticFactory;
 use App\Domain\Report\ValueObject\ReportData;
 use App\Domain\Url\ValueObject\Url;
 use League\Tactician\CommandBus;
@@ -78,7 +78,7 @@ class RunBenchmarkCommand extends Command
 
         $this->commandBus->handle(new GenerateReportCommand(
             new ReportData($results),
-            GenerateReportAdapterStaticFactory::getAvailableTypesFlip()[$reportType]
+            ReportAdapterStaticFactory::getType($reportType)
         ));
     }
 
@@ -149,8 +149,8 @@ class RunBenchmarkCommand extends Command
             $this->output,
             new ChoiceQuestion(
                 $content,
-                GenerateReportAdapterStaticFactory::getAvailableTypes(),
-                GenerateReportAdapterStaticFactory::getDefaultType()
+                ReportAdapterStaticFactory::getAvailableTypes(),
+                ReportAdapterStaticFactory::getDefaultType()
             )
         );
     }

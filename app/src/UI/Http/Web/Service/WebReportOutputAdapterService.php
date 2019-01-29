@@ -10,15 +10,18 @@ use Symfony\Component\Templating\TemplateNameParser;
 
 final class WebReportOutputAdapterService implements GenerateReportAdapterInterface
 {
+    public const OUTPUT_FILENAME = 'index.html';
+
     public function generate(ReportData $reportData): void
     {
         $filesystemLoader = new FilesystemLoader(__DIR__.'/../templates/%name%');
         $templating = new PhpEngine(new TemplateNameParser(), $filesystemLoader);
+
         $content = $templating->render('report.html.php', [
             'theWebsiteUrl' => $reportData->getWebsiteResult()->getWebsite()->getUrl(),
             'results'       => $reportData->getResults(),
         ]);
 
-        file_put_contents('index.html', $content);
+        file_put_contents(self::OUTPUT_FILENAME, $content);
     }
 }

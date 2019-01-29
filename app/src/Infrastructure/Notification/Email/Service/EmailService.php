@@ -12,17 +12,13 @@ final class EmailService implements NotificationInterface
     private $from;
     private $recipients;
 
-    /*
-     * Pass any adapter implements MailerInterface
-     */
     public function __construct(MailerInterface $mailer)
     {
         $this->mailer = $mailer;
 
-        /*
-         * These details obviously can be passed from container parameters
-         * (i.e taken from env or passed through the Config class object)
-         */
+
+        // These details obviously can be passed from container parameters
+        // (i.e taken from env or passed through the Config class object)
         $this->subject = 'Notification';
         $this->from = 'app@email.com';
         $this->recipients = [];

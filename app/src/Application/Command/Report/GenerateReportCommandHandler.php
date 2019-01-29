@@ -6,7 +6,7 @@ use App\Application\Command\CommandHandlerInterface;
 use App\Domain\Benchmark\Event\WebsiteLoadedSlowerEvent;
 use App\Domain\Benchmark\Event\WebsiteLoadedSlowerTwiceEvent;
 use App\Domain\Report\Command\GenerateReportCommand;
-use App\Domain\Report\Factory\GenerateReportAdapterStaticFactory;
+use App\Domain\Report\Factory\ReportAdapterStaticFactory;
 use App\Domain\Report\Service\GenerateReportService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -28,7 +28,7 @@ final class GenerateReportCommandHandler implements CommandHandlerInterface
         $report = $command->getReportData();
         $reportType = $command->getReportType();
 
-        $adapter = GenerateReportAdapterStaticFactory::create($reportType);
+        $adapter = ReportAdapterStaticFactory::create($reportType);
 
         $this->generateReportService->generate($adapter, $report);
 

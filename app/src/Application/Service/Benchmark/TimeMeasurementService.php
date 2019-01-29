@@ -25,7 +25,7 @@ class TimeMeasurementService
     public function getExecutionTime(): ?float
     {
         if (!$this->stopTime) {
-            return null ;
+            return null;
         }
 
         return $this->stopTime - $this->startTime;

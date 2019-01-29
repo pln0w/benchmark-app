@@ -41,7 +41,7 @@ class Url
 
             $_parts = parse_url($url);
             if (!in_array($_parts['scheme'], ['http', 'https'])) {
-                return false;
+                return false; // @codeCoverageIgnore
             }
 
             if (!preg_match($_domain_regex, $_parts['host'])) {

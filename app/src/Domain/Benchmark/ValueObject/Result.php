@@ -30,14 +30,14 @@ class Result
         return $this->website->isCompetitor();
     }
 
-    public function getRequestTime(): float
-    {
-        return $this->requestTime;
-    }
-
     public function getFormattedRequestTime(): string
     {
         return number_format($this->getRequestTime(), 3);
+    }
+
+    public function getRequestTime(): float
+    {
+        return $this->requestTime;
     }
 
     public function isFasterThan(Result $otherResult): bool

@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Domain\Report\Factory;
 
 use App\Domain\Report\GenerateReportAdapterInterface;
 use App\UI\Cli\Service\ConsoleReportOutputAdapterService;
 use App\UI\Http\Web\Service\WebReportOutputAdapterService;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class ReportAdapterStaticFactory
 {
@@ -46,7 +48,7 @@ class ReportAdapterStaticFactory
                 break;
             case self::TYPE_CONSOLE:
             default:
-                return new ConsoleReportOutputAdapterService();
+                return new ConsoleReportOutputAdapterService(new ConsoleOutput());
         }
     }
 }

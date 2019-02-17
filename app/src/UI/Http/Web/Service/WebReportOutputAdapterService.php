@@ -1,9 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace App\UI\Http\Web\Service;
 
 use App\Domain\Report\GenerateReportAdapterInterface;
 use App\Domain\Report\ValueObject\ReportData;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Templating\Loader\FilesystemLoader;
 use Symfony\Component\Templating\PhpEngine;
 use Symfony\Component\Templating\TemplateNameParser;
@@ -11,6 +14,13 @@ use Symfony\Component\Templating\TemplateNameParser;
 final class WebReportOutputAdapterService implements GenerateReportAdapterInterface
 {
     public const OUTPUT_FILENAME = 'index.html';
+
+    private $fileSystem;
+
+    public function __construct()
+    {
+        $this->fileSystem = new Filesystem();
+    }
 
     public function generate(ReportData $reportData): void
     {
@@ -22,6 +32,16 @@ final class WebReportOutputAdapterService implements GenerateReportAdapterInterf
             'results'       => $reportData->getResults(),
         ]);
 
-        file_put_contents(self::OUTPUT_FILENAME, $content);
+        try {
+
+            if (!$this->fileSystem->exists([self::OUTPUT_FILENAME])) {
+                $this->fileSystem->dumpFile(self::OUTPUT_FILENAME, $content);
+            }
+
+            $this->fileSystem->appendToFile(self::OUTPUT_FILENAME, $content);
+
+        } catch (IOExceptionInterface $exception) {
+            echo 'An error occurred while writing to file '.$exception->getPath();
+        }
     }
 }

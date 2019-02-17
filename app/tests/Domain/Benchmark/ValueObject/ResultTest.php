@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Tests\Domain\Benchmark\ValueObject;
 
 use App\Domain\Benchmark\ValueObject\Result;

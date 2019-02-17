@@ -1,32 +1,37 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Infrastructure\Notification\Email\Service;
 
 use App\Infrastructure\Notification\Email\MailerInterface;
 use App\Infrastructure\Notification\NotificationInterface;
+use Exception;
+use RuntimeException;
 
-final class EmailService implements NotificationInterface
+class EmailService implements NotificationInterface
 {
     private $mailer;
-    private $subject;
-    private $from;
     private $recipients;
+
+    private const SUBJECT = 'Notification';
+    private const FROM = 'app@email.com';
 
     public function __construct(MailerInterface $mailer)
     {
         $this->mailer = $mailer;
 
-
-        // These details obviously can be passed from container parameters
-        // (i.e taken from env or passed through the Config class object)
-        $this->subject = 'Notification';
-        $this->from = 'app@email.com';
+        // Should add logic to define recipients
         $this->recipients = [];
-        $this->recipients[] = 'notify@mail.com';
     }
 
     public function send(string $message): void
     {
-        $this->mailer->send($this->from, $this->recipients, $this->subject, $message);
+        try {
+
+            $this->mailer->send(self::FROM, $this->recipients, self::SUBJECT, $message);
+
+        } catch (Exception $e) {
+            throw new RuntimeException('Could not send email');
+        }
     }
 }

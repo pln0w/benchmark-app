@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\UI\Cli\Command;
 
@@ -70,7 +71,9 @@ class RunBenchmarkCommand extends Command
 
             } catch (RuntimeException $e) {
                 $this->output->writeln('<error>'.$e->getMessage().'</error>');
-                continue;
+                if (!$website->isCompetitor()) {
+                    throw new RuntimeException('Cannot continue, because benchmarking website is unavailable');
+                }
             }
         }
 

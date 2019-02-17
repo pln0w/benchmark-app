@@ -1,16 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Application\Service\Benchmark;
 
-class TimeMeasurementService
+class TimeMeasurementService implements TimeMeasurementServiceInterface
 {
     private $startTime;
     private $stopTime;
-
-    public function __construct()
-    {
-        date_default_timezone_set('UTC');
-    }
 
     public function start(): void
     {

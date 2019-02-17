@@ -1,13 +1,14 @@
 <?php
+declare(strict_types=1);
 
-namespace App\Domain\Benchmark\Event;
+namespace App\Domain\Report\Event;
 
 use App\Domain\Report\ValueObject\ReportData;
 use Symfony\Component\EventDispatcher\Event;
 
-class WebsiteLoadedSlowerEvent extends Event
+final class ReportGeneratedEvent extends Event
 {
-    public const NAME = 'website.loaded.slower';
+    public const NAME = 'report.generated';
 
     protected $report;
 

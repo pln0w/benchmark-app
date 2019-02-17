@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Domain\Report\Command;
 
 use App\Domain\Report\ValueObject\ReportData;
 
-class GenerateReportCommand
+final class GenerateReportCommand
 {
     private $reportData;
     private $reportType;

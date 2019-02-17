@@ -1,12 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Infrastructure\Notification\Sms\Service;
 
-use App\Infrastructure\Notification\Sms\MailerInterface;
 use App\Infrastructure\Notification\NotificationInterface;
+use App\Infrastructure\Notification\Sms\MailerInterface;
 use App\Infrastructure\Notification\Sms\SmsGatewayInterface;
+use Exception;
+use RuntimeException;
 
-final class SmsService implements NotificationInterface
+class SmsService implements NotificationInterface
 {
     private $gateway;
     private $recipients;
@@ -14,15 +17,19 @@ final class SmsService implements NotificationInterface
     public function __construct(SmsGatewayInterface $gateway)
     {
         $this->gateway = $gateway;
-        
-        // These details obviously can be passed from container parameters
-        // (i.e taken from env or passed through the Config class object)
+
+        // Should add logic to define recipients
         $this->recipients = [];
-        $this->recipients[] = '088111222333';
     }
 
     public function send(string $message): void
     {
-        $this->gateway->send($this->recipients, $message);
+        try {
+
+            $this->gateway->send($this->recipients, $message);
+
+        } catch (Exception $e) {
+            throw new RuntimeException('Could not send SMS');
+        }
     }
 }

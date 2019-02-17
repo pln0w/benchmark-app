@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Tests\Domain\Url\ValueObject;
 
@@ -57,7 +58,7 @@ class UrlTest extends TestCase
             'file://*test.com/',
             'file://sub.test.com/',
             'chrome//sub.test.com/',
-            'ftp://host.com'
+            'ftp://host.com',
         ];
 
         foreach ($cases as $case) {

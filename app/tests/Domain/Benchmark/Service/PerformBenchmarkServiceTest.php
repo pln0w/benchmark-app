@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Tests\Domain\Benchmark\Service;
 
-use App\Application\Service\Benchmark\LogBenchmarkResultService;
+use App\Application\Service\Benchmark\LogResultService;
 use App\Application\Service\Benchmark\TimeMeasurementService;
 use App\Application\Service\Http\HttpClientService;
 use App\Domain\Benchmark\Service\PerformBenchmarkService;
@@ -32,7 +33,7 @@ class PerformBenchmarkServiceTest extends TestCase
         $mHttpClientService->expects('get')
                            ->with($url->getUrl());
 
-        $mLogBenchmarkResultService = Mockery::mock(LogBenchmarkResultService::class);
+        $mLogBenchmarkResultService = Mockery::mock(LogResultService::class);
         $mLogBenchmarkResultService->expects('dump')
                                    ->withAnyArgs();
 
@@ -63,7 +64,7 @@ class PerformBenchmarkServiceTest extends TestCase
         $mHttpClientService->expects('get')
                            ->with($url->getUrl());
 
-        $mLogBenchmarkResultService = Mockery::mock(LogBenchmarkResultService::class);
+        $mLogBenchmarkResultService = Mockery::mock(LogResultService::class);
         $mLogBenchmarkResultService->shouldNotReceive('dump');
 
         $performBenchmarkService = new PerformBenchmarkService(

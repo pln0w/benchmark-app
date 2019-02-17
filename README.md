@@ -4,14 +4,15 @@
 ## Table of Contents
 
 * [About](###About)
+* [Stack](###Stack)
 * [Usage](###Usage)
-* [Presentation](###Presentation)
 
 ## About
-This repo contains console application in PHP, that can perform benchmark of given websites and comparing their response times can generate simple report.  
-User can choose the type of output format (console log or HTML file ready to open in web browser). Each request result is dumped into _log.txt_ file.  
+This repo contains console application in PHP, that can perform benchmark of given websites and based on their loading times comparision can generate simple report.  
+User can choose the type of output format (console log or HTML file ready to open in web browser).   
+Each single request result is dumped into _log.txt_ file.    
   
-### Dependencies
+### Stack
 The script uses no framework, however it depends on few components to provide functionality for infrastructure and application layers.  
 
 Versions:
@@ -33,28 +34,41 @@ Development dependencies:
 * mockery/mockery  
 * phpstan/phpstan  
 
+Tests code coverage: ~ 40%  
+
+
 ## Usage
 > See Makefile legend  
 
-`make help`
+```sh
+$ make help
+```
   
   
 > Build Docker image  
 
-`make build`  
+```sh
+$ make build
+```
   
   
 > Run application and perform benchmark for either yours or default website URLs  
 
-`make benchmark`  
+```sh
+$ make benchmark
+```
 _This step produce _log.txt_ file or _index.html_ file, if you choose to dump your report into HTML file. In this case, you'll be informed to open this file in your browser. Keep in mind the file will be removed after running this command next time._  
     
     
 > Run unit tests  
 
-`make unit-tests`  
+```sh
+$ make unit-tests
+```
   
   
 > Run phpstan static code analysis the highest level  
 
-`make phpstan`
+```sh
+$ make phpstan
+```

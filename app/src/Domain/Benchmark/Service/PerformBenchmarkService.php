@@ -1,35 +1,40 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Domain\Benchmark\Service;
 
-use App\Application\Service\Benchmark\LogBenchmarkResultService;
-use App\Application\Service\Benchmark\TimeMeasurementService;
-use App\Application\Service\Http\HttpClientService;
+use App\Application\Service\Benchmark\TimeMeasurementServiceInterface;
+use App\Application\Service\Http\HttpClientServiceInterface;
 use App\Domain\Benchmark\ValueObject\Result;
 use App\Domain\Url\ValueObject\Url;
+use Exception;
 use RuntimeException;
 
 class PerformBenchmarkService
 {
     private $timeMeasurement;
     private $httpClient;
-    private $logBenchmarkResult;
 
     public function __construct(
-        TimeMeasurementService $timeMeasurement,
-        HttpClientService $httpClient,
-        LogBenchmarkResultService $logBenchmarkResult
+        TimeMeasurementServiceInterface $timeMeasurement,
+        HttpClientServiceInterface $httpClient
     ) {
         $this->timeMeasurement = $timeMeasurement;
         $this->httpClient = $httpClient;
-        $this->logBenchmarkResult = $logBenchmarkResult;
     }
 
     public function run(Url $url): Result
     {
         $this->timeMeasurement->start();
 
-        $this->httpClient->get($url->getUrl());
+        try {
+
+            $this->httpClient->get($url->getUrl());
+
+        } catch (Exception $e) {
+            $notRespondingUrl = $url->getUrl();
+            throw new RuntimeException("Could not connect with $notRespondingUrl");
+        }
 
         $this->timeMeasurement->stop();
 
@@ -39,8 +44,6 @@ class PerformBenchmarkService
         }
 
         $result = new Result($url, $executionTime);
-
-        $this->logBenchmarkResult->dump($result);
 
         return $result;
     }

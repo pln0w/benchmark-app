@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace Tests\Application\Command\Report;
 
 use App\Application\Command\Report\GenerateReportCommandHandler;
+use App\Application\Service\Report\LogReportService;
 use App\Domain\Report\Command\GenerateReportCommand;
-use App\Domain\Report\Service\GenerateReportService;
+use App\Domain\Report\GenerateReportServiceInterface;
 use App\Domain\Report\ValueObject\ReportData;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -15,38 +17,29 @@ class GenerateReportCommandHandlerTest extends TestCase
     public function testHandle(): void
     {
         $mReportData = Mockery::mock(ReportData::class);
-        $mReportData->expects('isWebsiteResultSlower')
-                    ->andReturnTrue();
-
-        $mReportData->expects('isWebsiteResultSlowerTwice')
-                    ->andReturnTrue();
 
         $mEventDispatcherInterface = Mockery::mock(EventDispatcherInterface::class);
         $mEventDispatcherInterface->expects('dispatch')
                                   ->withAnyArgs()
                                   ->andReturnNull();
 
-        $mEventDispatcherInterface->expects('dispatch')
-                                  ->withAnyArgs()
-                                  ->andReturnNull();
-
-        $mGenerateReportService = Mockery::mock(GenerateReportService::class);
+        $mGenerateReportService = Mockery::mock(GenerateReportServiceInterface::class);
         $mGenerateReportService->expects('generate')
                                ->withAnyArgs();
 
-        $mGenerateReportCommand = Mockery::mock(GenerateReportCommand::class);
-        $mGenerateReportCommand->expects('getReportData')
-                               ->andReturn($mReportData);
 
-        $mGenerateReportCommand->expects('getReportType')
-                               ->andReturn(1);
+        $mLogReportService = Mockery::mock(LogReportService::class);
+        $mLogReportService->expects('dump')
+                          ->withAnyArgs()
+                          ->andReturnNull();
 
         $handler = new GenerateReportCommandHandler(
             $mEventDispatcherInterface,
-            $mGenerateReportService
+            $mGenerateReportService,
+            $mLogReportService
         );
 
-        $result = $handler->handle($mGenerateReportCommand);
+        $result = $handler->handle(new GenerateReportCommand($mReportData, 1));
 
         $this->assertNull($result);
     }

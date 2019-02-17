@@ -10,6 +10,7 @@ help:
 build: ## Build the image
 	-@docker build -t $(APP_NAME) .
 	-@docker run -it -v `pwd`/app:/app $(APP_NAME) composer install
+	-@cp `pwd`/app/phpunit.xml.dist `pwd`/app/phpunit.xml
 
 benchmark: ## Run application for given data
 	-@[ -f ./app/index.html ] && docker run -it -v `pwd`/app:/app $(APP_NAME) rm index.html 2>/dev/null; true
@@ -19,5 +20,5 @@ benchmark: ## Run application for given data
 unit-tests: ## Run unit tests
 	-@docker run -it -v `pwd`/app:/app $(APP_NAME) phpunit --testdox --coverage-html /app/coverage tests/ 2>/dev/null; true
 
-phpstan:
+phpstan: ## Run phpstan static code analysis
 	-@docker run -it -v `pwd`/app:/app $(APP_NAME) vendor/bin/phpstan analyze --memory-limit=-1 --level=max src 2>/dev/null; true

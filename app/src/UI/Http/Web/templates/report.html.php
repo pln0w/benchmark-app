@@ -34,20 +34,20 @@
 
       <?php
       if (isset($results)) {
-          foreach ($results as $result): ?>
+          foreach ($results as $result) { ?>
 
             <tr class="<?php
             echo (!$result->isTheWebsite()) ?: ' has-text-weight-bold';
             echo (1 !== $position) ?: ' is-selected';
             ?>">
-              <td><?= $position ?></td>
-              <td><?= $result->getWebsite()->getUrl() ?></td>
-              <td><?= $result->getFormattedRequestTime() ?> s</td>
+              <td><?php echo $position ?></td>
+              <td><?php echo $result->getWebsite()->getUrl() ?></td>
+              <td><?php echo $result->getFormattedRequestTime() ?> s</td>
             </tr>
 
               <?php $position++; ?>
 
-          <?php endforeach;
+          <?php }
       }
       ?>
 

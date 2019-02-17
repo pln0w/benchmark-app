@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Tests\Infrastructure\Notification\Sms\Service;
 
 use App\Infrastructure\Notification\Sms\Service\SmsService;

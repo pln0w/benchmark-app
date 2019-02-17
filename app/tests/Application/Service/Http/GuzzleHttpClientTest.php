@@ -1,9 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Tests\Application\Service\Http;
 
 use App\Application\Service\Http\GuzzleHttpClient;
-use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class GuzzleHttpClientTest extends TestCase
